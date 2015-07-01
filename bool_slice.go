@@ -1,0 +1,103 @@
+package sparse
+
+type BoolSlice struct {
+	m     []int64
+	msize int64
+	size  int64
+}
+
+func NewBoolSlice(size int64) *BoolSlice {
+	bs := &BoolSlice{
+		m:     make([]int64, 1),
+		msize: 1,
+		size:  size,
+	}
+
+	bs.m[0] = size
+
+	return bs
+}
+
+func (bs *BoolSlice) Size() int64 {
+	return bs.size
+}
+
+func (bs *BoolSlice) Get(idx int64) (v bool) {
+	var i, cursor int64
+
+	for ; i < bs.msize; i++ {
+		cursor += bs.m[i]
+		if idx < cursor {
+			return
+		}
+		v = !v
+	}
+
+	return
+}
+
+func (bs *BoolSlice) Set(i int64, v bool) {
+	// TODO
+}
+
+func (bs *BoolSlice) Append(v bool) {
+	if (bs.msize&1 == 0) == v {
+		bs.m[bs.msize]++
+	} else {
+		bs.m = append(bs.m, 1)
+		bs.msize++
+	}
+	bs.size++
+}
+
+func BoolSliceFromSlice(s []bool) *BoolSlice {
+	var idx, msize int64
+	var currval bool
+
+	msize = 1
+
+	slen := len(s)
+
+	for i := 0; i < slen; i++ {
+		if s[i] != currval {
+			msize++
+			currval = !currval
+		}
+	}
+
+	bs := &BoolSlice{
+		m:     make([]int64, msize),
+		msize: msize,
+		size:  int64(slen),
+	}
+
+	currval = false
+	for i := 0; i < slen; {
+		if s[i] == currval {
+			bs.m[idx]++
+			i++
+			continue
+		}
+		currval = !currval
+		idx++
+	}
+
+	return bs
+}
+
+func (bs *BoolSlice) ToSlice() []bool {
+	var i, j, cursor int64
+	var currval bool
+
+	b := make([]bool, bs.size)
+
+	for ; i < bs.msize; i++ {
+		for j = 0; j < bs.m[i]; j++ {
+			b[cursor] = currval
+			cursor++
+		}
+		currval = !currval
+	}
+
+	return b
+}
