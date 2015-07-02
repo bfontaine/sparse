@@ -37,7 +37,7 @@ func (bs *BoolSlice) Set(i int64, v bool) {
 
 func (bs *BoolSlice) Append(v bool) {
 	if (bs.msize&1 == 0) == v {
-		bs.m[bs.msize]++
+		bs.m[bs.msize-1]++
 	} else {
 		bs.m = append(bs.m, 1)
 		bs.msize++
