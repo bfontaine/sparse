@@ -11,7 +11,7 @@ func assertEqualBoolSlices(t *testing.T, b1, b2 []bool) {
 	l := len(b1)
 	assert.Equal(t, l, len(b2), "The lengths of %v and %v must be equal", b1, b2)
 	for i := 0; i < l; i++ {
-		assert.Equal(t, b1[i], b2[i], fmt.Sprintf("The element %d of %v and %v must be equal", i, b1, b2))
+		assert.Equal(t, b1[i], b2[i], fmt.Sprintf("The elements %d of %v and %v must be equal", i, b1, b2))
 	}
 }
 
@@ -109,4 +109,48 @@ func TestBoolSliceAppendStartWithFalse(t *testing.T) {
 	bs.Append(true)
 	assert.Equal(t, 3, bs.Size())
 	assert.Equal(t, true, bs.Get(2))
+}
+
+func TestBoolSliceSetNoop(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true})
+	bs.Set(0, true)
+	assert.Equal(t, true, bs.Get(0))
+}
+
+func TestBoolSliceSimpleSet(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true})
+	bs.Set(0, false)
+	assert.Equal(t, false, bs.Get(0))
+	bs.Set(0, true)
+	assert.Equal(t, true, bs.Get(0))
+
+	bs.Append(true)
+	assert.Equal(t, true, bs.Get(0))
+	assert.Equal(t, true, bs.Get(1))
+
+	bs.Set(1, false)
+	assert.Equal(t, true, bs.Get(0))
+	assert.Equal(t, false, bs.Get(1))
+
+	bs.Set(0, false)
+	assert.Equal(t, false, bs.Get(0))
+	assert.Equal(t, false, bs.Get(1))
+
+	bs.Set(1, true)
+	assert.Equal(t, false, bs.Get(0))
+	assert.Equal(t, true, bs.Get(1))
+}
+
+func TestBoolSliceSet1(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{false, false, false, true, false, false})
+	bs.Set(1, true)
+
+	assertEqualBoolSlices(t, []bool{false, true, false, true, false, false}, bs.ToSlice())
+}
+
+func TestBoolSliceSet2(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true, true, false, false})
+	bs.Set(1, false)
+
+	assertEqualBoolSlices(t, []bool{true, false, false, false}, bs.ToSlice())
 }
