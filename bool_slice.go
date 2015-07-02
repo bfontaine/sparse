@@ -17,26 +17,25 @@ func (bs *BoolSlice) Size() int64 {
 	return bs.size
 }
 
-func (bs *BoolSlice) Get(idx int64) (v bool) {
+func (bs *BoolSlice) Get(idx int64) bool {
 	var i, cursor int64
 
 	for ; i < bs.msize; i++ {
 		cursor += bs.m[i]
 		if idx < cursor {
-			return
+			break
 		}
-		v = !v
 	}
 
-	return
+	return bs.mvalue(i)
 }
 
-func (bs *BoolSlice) Set(i int64, v bool) {
+func (bs *BoolSlice) Set(idx int64, v bool) {
 	// TODO
 }
 
 func (bs *BoolSlice) Append(v bool) {
-	if (bs.msize&1 == 0) == v {
+	if bs.lastmvalue() == v {
 		bs.m[bs.msize-1]++
 	} else {
 		bs.m = append(bs.m, 1)
@@ -44,6 +43,9 @@ func (bs *BoolSlice) Append(v bool) {
 	}
 	bs.size++
 }
+
+func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
+func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
 
 func BoolSliceFromSlice(s []bool) *BoolSlice {
 	var idx, msize int64
