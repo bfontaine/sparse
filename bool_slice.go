@@ -6,16 +6,11 @@ type BoolSlice struct {
 	size  int64
 }
 
-func NewBoolSlice(size int64) *BoolSlice {
-	bs := &BoolSlice{
+func NewBoolSlice() *BoolSlice {
+	return &BoolSlice{
 		m:     make([]int64, 1),
 		msize: 1,
-		size:  size,
 	}
-
-	bs.m[0] = size
-
-	return bs
 }
 
 func (bs *BoolSlice) Size() int64 {

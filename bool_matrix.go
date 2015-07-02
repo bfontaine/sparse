@@ -7,7 +7,7 @@ type BoolMatrix struct {
 
 func NewBoolMatrix(w, h int64) *BoolMatrix {
 	m := &BoolMatrix{
-		bs: NewBoolSlice(w * h),
+		bs: NewBoolSlice(),
 		w:  w,
 		h:  h,
 	}
