@@ -69,8 +69,44 @@ func TestBoolSliceFromToSlice(t *testing.T) {
 }
 
 func TestBoolSliceGet(t *testing.T) {
-	bs := BoolSliceFromSlice([]bool{false, true, true, false, false, true, false)
+	bs := BoolSliceFromSlice([]bool{false, true, true, false, false, true, false})
 
-	assert.Equal(t, false, bs[0])
-	assert.Equal(t, true, bs[1])
+	assert.Equal(t, false, bs.Get(0))
+	assert.Equal(t, true, bs.Get(1))
+	assert.Equal(t, true, bs.Get(2))
+	assert.Equal(t, false, bs.Get(3))
+}
+
+func TestBoolSliceAppendStartWithTrue(t *testing.T) {
+	bs := NewBoolSlice()
+	assert.Equal(t, 0, bs.Size())
+
+	bs.Append(true)
+	assert.Equal(t, 1, bs.Size())
+	assert.Equal(t, true, bs.Get(0))
+
+	bs.Append(true)
+	assert.Equal(t, 2, bs.Size())
+	assert.Equal(t, true, bs.Get(1))
+
+	bs.Append(false)
+	assert.Equal(t, 3, bs.Size())
+	assert.Equal(t, false, bs.Get(2))
+}
+
+func TestBoolSliceAppendStartWithFalse(t *testing.T) {
+	bs := NewBoolSlice()
+	assert.Equal(t, 0, bs.Size())
+
+	bs.Append(false)
+	assert.Equal(t, 1, bs.Size())
+	assert.Equal(t, false, bs.Get(0))
+
+	bs.Append(false)
+	assert.Equal(t, 2, bs.Size())
+	assert.Equal(t, false, bs.Get(1))
+
+	bs.Append(true)
+	assert.Equal(t, 3, bs.Size())
+	assert.Equal(t, true, bs.Get(2))
 }
