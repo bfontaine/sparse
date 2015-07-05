@@ -139,6 +139,27 @@ func TestBoolSliceSetNoop(t *testing.T) {
 	assert.Equal(t, true, bs.Get(0))
 }
 
+func TestBoolSliceSetInternalsOneValue(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true})
+	assert.Nil(t, bs.Set(0, false))
+
+	assert.Equal(t, 1, bs.msize)
+	assert.Equal(t, 1, bs.m[0])
+	assert.Equal(t, 1, bs.size)
+}
+
+func TestBoolSliceSetInternalsMiddleRange(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true, true, true})
+	assert.Nil(t, bs.Set(1, false))
+
+	assert.Equal(t, 4, bs.msize)
+	assert.Equal(t, 0, bs.m[0])
+	assert.Equal(t, 1, bs.m[1])
+	assert.Equal(t, 1, bs.m[2])
+	assert.Equal(t, 1, bs.m[3])
+	assert.Equal(t, 3, bs.size)
+}
+
 func TestBoolSliceSimpleSet(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true})
 	assert.Nil(t, bs.Set(0, false))

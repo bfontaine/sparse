@@ -37,8 +37,8 @@ var (
 )
 
 func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
-	bs.rw.Lock()
-	defer bs.rw.Unlock()
+	//bs.rw.Lock()
+	//defer bs.rw.Unlock()
 
 	if idx >= bs.size {
 		return ErrBoolSliceSetOverflow
@@ -51,7 +51,11 @@ func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 		return
 	}
 
-	// TODO
+	// FIXME this is too dirty
+	s := bs.ToSlice()
+	s[idx] = v
+	*bs = *BoolSliceFromSlice(s)
+
 	return
 }
 
