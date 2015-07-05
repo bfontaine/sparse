@@ -3,6 +3,9 @@
 **sparse** is a Go library for memory-efficient and thread-safe sparse data
 structures.
 
+[![Build Status](https://travis-ci.org/bfontaine/sparse.svg?branch=master)](https://travis-ci.org/bfontaine/sparse)
+[![GoDoc](https://godoc.org/github.com/bfontaine/sparse?status.svg)](https://godoc.org/github.com/bfontaine/sparse)
+
 ## Install
 
     go get github.com/bfontaine/sparse
