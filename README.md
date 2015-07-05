@@ -19,7 +19,7 @@ These data structures are more efficient in memory but less efficient in time.
 Read operations on both are in `O(n)` even if in practice they’re much lower if
 the structures contain sparse data. The write operations are costly due to the
 internal data representation. You shouldn’t use these if you want small slices
-with frequent write accesses. They become practical with large data structures
+with frequent write access. They become practical with large data structures
 consisting of *sparse* data.
 
 For example, consider a slice of 1M `false` values with only 1000 `true`
