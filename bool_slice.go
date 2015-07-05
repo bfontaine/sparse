@@ -1,9 +1,12 @@
 package sparse
 
+import "sync"
+
 type BoolSlice struct {
 	m     []int64
 	msize int64
 	size  int64
+	rw    sync.RWMutex
 }
 
 func NewBoolSlice() *BoolSlice {
@@ -13,28 +16,37 @@ func NewBoolSlice() *BoolSlice {
 	}
 }
 
-func (bs *BoolSlice) Size() int64 {
-	return bs.size
+func (bs *BoolSlice) Size() (s int64) {
+	bs.rw.RLock()
+	s = bs.size
+	bs.rw.RUnlock()
+	return
 }
 
 func (bs *BoolSlice) Get(idx int64) bool {
-	var i, cursor int64
-
-	for ; i < bs.msize; i++ {
-		cursor += bs.m[i]
-		if idx < cursor {
-			break
-		}
-	}
-
-	return bs.mvalue(i)
+	bs.rw.RLock()
+	defer bs.rw.RUnlock()
+	return bs.mvalue(bs.mindex(idx))
 }
 
 func (bs *BoolSlice) Set(idx int64, v bool) {
+	bs.rw.Lock()
+	defer bs.rw.Unlock()
+
+	midx := bs.mindex(idx)
+
+	// noop
+	if bs.mvalue(midx) == v {
+		return
+	}
+
 	// TODO
 }
 
 func (bs *BoolSlice) Append(v bool) {
+	bs.rw.Lock()
+	defer bs.rw.Unlock()
+
 	if bs.lastmvalue() == v {
 		bs.m[bs.msize-1]++
 	} else {
@@ -46,6 +58,19 @@ func (bs *BoolSlice) Append(v bool) {
 
 func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
 func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
+
+func (bs *BoolSlice) mindex(idx int64) int64 {
+	var i, cursor int64
+
+	for ; i < bs.msize; i++ {
+		cursor += bs.m[i]
+		if idx < cursor {
+			return i
+		}
+	}
+
+	return bs.msize
+}
 
 func BoolSliceFromSlice(s []bool) *BoolSlice {
 	var idx, msize int64
@@ -83,6 +108,9 @@ func BoolSliceFromSlice(s []bool) *BoolSlice {
 }
 
 func (bs *BoolSlice) ToSlice() []bool {
+	bs.rw.RLock()
+	defer bs.rw.RUnlock()
+
 	var i, j, cursor int64
 	var currval bool
 
