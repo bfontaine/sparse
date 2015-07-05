@@ -68,6 +68,24 @@ func TestBoolSliceFromToSlice(t *testing.T) {
 	}
 }
 
+func TestBoolSliceMValue(t *testing.T) {
+	bs := NewBoolSlice()
+
+	assert.Equal(t, false, bs.mvalue(0))
+	assert.Equal(t, true, bs.mvalue(1))
+	assert.Equal(t, false, bs.mvalue(2))
+	assert.Equal(t, true, bs.mvalue(3))
+}
+
+func TestBoolSliceMIndex(t *testing.T) {
+	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false}).mindex(0))
+	assert.Equal(t, 1, BoolSliceFromSlice([]bool{true}).mindex(0))
+
+	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false, false, true}).mindex(0))
+	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false, false, true}).mindex(1))
+	assert.Equal(t, 1, BoolSliceFromSlice([]bool{false, false, true}).mindex(2))
+}
+
 func TestBoolSliceGet(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{false, true, true, false, false, true, false})
 
@@ -149,6 +167,13 @@ func TestBoolSliceSet1(t *testing.T) {
 }
 
 func TestBoolSliceSet2(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true, true, false, false})
+	bs.Set(1, false)
+
+	assertEqualBoolSlices(t, []bool{true, false, false, false}, bs.ToSlice())
+}
+
+func TestBoolSliceSet3(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true, true, false, false})
 	bs.Set(1, false)
 
