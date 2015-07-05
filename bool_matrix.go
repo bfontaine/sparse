@@ -15,8 +15,8 @@ func NewBoolMatrix(w, h int64) *BoolMatrix {
 	return m
 }
 
-func (m *BoolMatrix) Set(x, y int64, v bool) {
-	m.bs.Set(m.index(x, y), v)
+func (m *BoolMatrix) Set(x, y int64, v bool) error {
+	return m.bs.Set(m.index(x, y), v)
 }
 
 func (m *BoolMatrix) Get(x, y int64) bool {

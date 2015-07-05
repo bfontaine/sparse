@@ -29,6 +29,9 @@ func (bs *BoolSlice) Size() (s int64) {
 func (bs *BoolSlice) Get(idx int64) bool {
 	bs.rw.RLock()
 	defer bs.rw.RUnlock()
+	if idx >= bs.size {
+		return false
+	}
 	return bs.mvalue(bs.mindex(idx))
 }
 
