@@ -95,6 +95,7 @@ func (bs *BoolSlice) mindex(idx int64) int64 {
 	return bs.msize
 }
 
+// BoolSliceFromSlice converts a []bool into a BoolSlice
 func BoolSliceFromSlice(s []bool) *BoolSlice {
 	var idx, msize int64
 	var currval bool
@@ -130,6 +131,7 @@ func BoolSliceFromSlice(s []bool) *BoolSlice {
 	return bs
 }
 
+// ToSlice converts a BoolSlice to a []bool
 func (bs *BoolSlice) ToSlice() []bool {
 	bs.rw.RLock()
 	defer bs.rw.RUnlock()
