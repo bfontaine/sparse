@@ -47,3 +47,8 @@ Examples:
 | `[T, 20 × F, T]`     | `[0, 1, 20, 1]` |
 
 
+## Limitations
+
+* The `Set` method isn’t supported at the moment. This means the only way to
+  write on a `BoolSlice` after its initialization is with `.Append`.
+  I’m looking for an efficient *and* elegant way to solve this issue.

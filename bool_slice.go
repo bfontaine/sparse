@@ -1,6 +1,9 @@
 package sparse
 
-import "sync"
+import (
+	"errors"
+	"sync"
+)
 
 // BoolSlice is a compact representation of a []bool.
 type BoolSlice struct {
@@ -40,28 +43,7 @@ func (bs *BoolSlice) Get(idx int64) bool {
 // Set sets a value at the given index. If the index is greater than the return
 // value of Size() the missing indexes will be filled with false.
 func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
-	//bs.rw.Lock()
-	//defer bs.rw.Unlock()
-
-	if idx >= bs.size {
-		// TODO fill the cells with false, e.g.
-		// [false, true].Set(42, true)
-		// -> [false, true, 40 × false, true]
-	}
-
-	midx := bs.mindex(idx)
-
-	// noop
-	if bs.mvalue(midx) == v {
-		return
-	}
-
-	// FIXME this is too dirty
-	s := bs.ToSlice()
-	s[idx] = v
-	*bs = *BoolSliceFromSlice(s)
-
-	return
+	return errors.New(".Set is not implemented")
 }
 
 // Append appends a value to the slice.
@@ -79,7 +61,14 @@ func (bs *BoolSlice) Append(v bool) (err error) {
 	return
 }
 
-func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
+func (bs *BoolSlice) lastmvalue() bool {
+	if bs.msize == 0 {
+		return true
+	}
+
+	return bs.mvalue(bs.msize - 1)
+}
+
 func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
 
 func (bs *BoolSlice) mindex(idx int64) int64 {
