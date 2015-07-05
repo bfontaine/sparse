@@ -1,10 +1,8 @@
 package sparse
 
-import (
-	"errors"
-	"sync"
-)
+import "sync"
 
+// BoolSlice is a compact representation of a []bool.
 type BoolSlice struct {
 	m     []int64
 	msize int64
@@ -12,6 +10,7 @@ type BoolSlice struct {
 	rw    sync.RWMutex
 }
 
+// NewBoolSlice returns a pointer on a new BoolSlice.
 func NewBoolSlice() *BoolSlice {
 	return &BoolSlice{
 		m:     make([]int64, 1),
@@ -19,6 +18,7 @@ func NewBoolSlice() *BoolSlice {
 	}
 }
 
+// Size returns the size of the BoolSlice.
 func (bs *BoolSlice) Size() (s int64) {
 	bs.rw.RLock()
 	s = bs.size
@@ -26,6 +26,8 @@ func (bs *BoolSlice) Size() (s int64) {
 	return
 }
 
+// Get returns the bool at the given index. It returns false if the index is
+// greater or equal to the return value of Size().
 func (bs *BoolSlice) Get(idx int64) bool {
 	bs.rw.RLock()
 	defer bs.rw.RUnlock()
@@ -35,16 +37,16 @@ func (bs *BoolSlice) Get(idx int64) bool {
 	return bs.mvalue(bs.mindex(idx))
 }
 
-var (
-	ErrBoolSliceSetOverflow = errors.New("Can't set value outside range")
-)
-
+// Set sets a value at the given index. If the index is greater than the return
+// value of Size() the missing indexes will be filled with false.
 func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 	//bs.rw.Lock()
 	//defer bs.rw.Unlock()
 
 	if idx >= bs.size {
-		return ErrBoolSliceSetOverflow
+		// TODO fill the cells with false, e.g.
+		// [false, true].Set(42, true)
+		// -> [false, true, 40 × false, true]
 	}
 
 	midx := bs.mindex(idx)
@@ -62,6 +64,7 @@ func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 	return
 }
 
+// Append appends a value to the slice.
 func (bs *BoolSlice) Append(v bool) (err error) {
 	bs.rw.Lock()
 	defer bs.rw.Unlock()
