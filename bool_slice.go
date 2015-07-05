@@ -40,8 +40,8 @@ func (bs *BoolSlice) Get(idx int64) bool {
 	return bs.mvalue(bs.mindex(idx))
 }
 
-// Set sets a value at the given index. If the index is greater than the return
-// value of Size() the missing indexes will be filled with false.
+// Set sets a value at the given index. This is not implement right now and
+// will return an error.
 func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 	return errors.New(".Set is not implemented")
 }

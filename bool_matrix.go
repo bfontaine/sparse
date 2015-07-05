@@ -23,7 +23,8 @@ func (m BoolMatrix) Width() int64 { return m.w }
 // Height returns the height of the matrix.
 func (m BoolMatrix) Height() int64 { return m.h }
 
-// Set sets the value at the given coordinates.
+// Set sets the value at the given coordinates. This is not implemented right
+// now and will return an error.
 func (m *BoolMatrix) Set(x, y int64, v bool) error {
 	return m.bs.Set(m.index(x, y), v)
 }
