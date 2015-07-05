@@ -77,13 +77,18 @@ func TestBoolSliceMValue(t *testing.T) {
 	assert.Equal(t, true, bs.mvalue(3))
 }
 
-func TestBoolSliceMIndex(t *testing.T) {
-	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false}).mindex(0))
-	assert.Equal(t, 1, BoolSliceFromSlice([]bool{true}).mindex(0))
+func testmindexIndex(s []bool, i int64) (v int64) {
+	v, _ = BoolSliceFromSlice(s).mindex(i)
+	return
+}
 
-	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false, false, true}).mindex(0))
-	assert.Equal(t, 0, BoolSliceFromSlice([]bool{false, false, true}).mindex(1))
-	assert.Equal(t, 1, BoolSliceFromSlice([]bool{false, false, true}).mindex(2))
+func TestBoolSliceMIndex(t *testing.T) {
+	assert.Equal(t, 0, testmindexIndex([]bool{false}, 0))
+	assert.Equal(t, 1, testmindexIndex([]bool{true}, 0))
+
+	assert.Equal(t, 0, testmindexIndex([]bool{false, false, true}, 0))
+	assert.Equal(t, 0, testmindexIndex([]bool{false, false, true}, 1))
+	assert.Equal(t, 1, testmindexIndex([]bool{false, false, true}, 2))
 }
 
 func TestBoolSliceGet(t *testing.T) {

@@ -26,14 +26,15 @@ func (bs *BoolSlice) Size() (s int64) {
 func (bs *BoolSlice) Get(idx int64) bool {
 	bs.rw.RLock()
 	defer bs.rw.RUnlock()
-	return bs.mvalue(bs.mindex(idx))
+	mi, _ := bs.mindex(idx)
+	return bs.mvalue(mi)
 }
 
 func (bs *BoolSlice) Set(idx int64, v bool) {
 	bs.rw.Lock()
 	defer bs.rw.Unlock()
 
-	midx := bs.mindex(idx)
+	midx, _ := bs.mindex(idx)
 
 	// noop
 	if bs.mvalue(midx) == v {
@@ -59,17 +60,17 @@ func (bs *BoolSlice) Append(v bool) {
 func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
 func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
 
-func (bs *BoolSlice) mindex(idx int64) int64 {
+func (bs *BoolSlice) mindex(idx int64) (int64, int64) {
 	var i, cursor int64
 
 	for ; i < bs.msize; i++ {
 		cursor += bs.m[i]
 		if idx < cursor {
-			return i
+			return i, idx - cursor + bs.m[i]
 		}
 	}
 
-	return bs.msize
+	return bs.msize, 0
 }
 
 func BoolSliceFromSlice(s []bool) *BoolSlice {
