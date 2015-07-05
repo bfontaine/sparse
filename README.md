@@ -1,6 +1,7 @@
 # sparse
 
-**sparse** is a Go library for sparse data structures.
+**sparse** is a Go library for memory-efficient and thread-safe sparse data
+structures.
 
 ## Install
 
@@ -23,9 +24,9 @@ consisting of *sparse* data.
 
 For example, consider a slice of 1M `false` values with only 1000 `true`
 values in it. A normal `bool` slice will need 1M cells while a `BoolSlice` will
-use between 2 and 2001 cells depending on where they are. Append another 1M
-false values: the `bool` slice will double its size while the `BoolSlice`
-internal size won’t change.
+use between 2 and 2001 cells depending on where the `true` values are. Append
+another 1M false values: the `bool` slice will double its size while the
+`BoolSlice` internal size won’t change.
 
 ## Internal representation
 
