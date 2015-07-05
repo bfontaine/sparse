@@ -1,6 +1,9 @@
 package sparse
 
-import "sync"
+import (
+	"errors"
+	"sync"
+)
 
 type BoolSlice struct {
 	m     []int64
@@ -26,15 +29,22 @@ func (bs *BoolSlice) Size() (s int64) {
 func (bs *BoolSlice) Get(idx int64) bool {
 	bs.rw.RLock()
 	defer bs.rw.RUnlock()
-	mi, _ := bs.mindex(idx)
-	return bs.mvalue(mi)
+	return bs.mvalue(bs.mindex(idx))
 }
 
-func (bs *BoolSlice) Set(idx int64, v bool) {
+var (
+	ErrBoolSliceSetOverflow = errors.New("Can't set value outside range")
+)
+
+func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 	bs.rw.Lock()
 	defer bs.rw.Unlock()
 
-	midx, _ := bs.mindex(idx)
+	if idx >= bs.size {
+		return ErrBoolSliceSetOverflow
+	}
+
+	midx := bs.mindex(idx)
 
 	// noop
 	if bs.mvalue(midx) == v {
@@ -42,9 +52,10 @@ func (bs *BoolSlice) Set(idx int64, v bool) {
 	}
 
 	// TODO
+	return
 }
 
-func (bs *BoolSlice) Append(v bool) {
+func (bs *BoolSlice) Append(v bool) (err error) {
 	bs.rw.Lock()
 	defer bs.rw.Unlock()
 
@@ -55,22 +66,23 @@ func (bs *BoolSlice) Append(v bool) {
 		bs.msize++
 	}
 	bs.size++
+	return
 }
 
 func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
 func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
 
-func (bs *BoolSlice) mindex(idx int64) (int64, int64) {
+func (bs *BoolSlice) mindex(idx int64) int64 {
 	var i, cursor int64
 
 	for ; i < bs.msize; i++ {
 		cursor += bs.m[i]
 		if idx < cursor {
-			return i, idx - cursor + bs.m[i]
+			return i
 		}
 	}
 
-	return bs.msize, 0
+	return bs.msize
 }
 
 func BoolSliceFromSlice(s []bool) *BoolSlice {

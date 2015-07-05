@@ -77,9 +77,8 @@ func TestBoolSliceMValue(t *testing.T) {
 	assert.Equal(t, true, bs.mvalue(3))
 }
 
-func testmindexIndex(s []bool, i int64) (v int64) {
-	v, _ = BoolSliceFromSlice(s).mindex(i)
-	return
+func testmindexIndex(s []bool, i int64) int64 {
+	return BoolSliceFromSlice(s).mindex(i)
 }
 
 func TestBoolSliceMIndex(t *testing.T) {
@@ -104,15 +103,15 @@ func TestBoolSliceAppendStartWithTrue(t *testing.T) {
 	bs := NewBoolSlice()
 	assert.Equal(t, 0, bs.Size())
 
-	bs.Append(true)
+	assert.Nil(t, bs.Append(true))
 	assert.Equal(t, 1, bs.Size())
 	assert.Equal(t, true, bs.Get(0))
 
-	bs.Append(true)
+	assert.Nil(t, bs.Append(true))
 	assert.Equal(t, 2, bs.Size())
 	assert.Equal(t, true, bs.Get(1))
 
-	bs.Append(false)
+	assert.Nil(t, bs.Append(false))
 	assert.Equal(t, 3, bs.Size())
 	assert.Equal(t, false, bs.Get(2))
 }
@@ -121,45 +120,46 @@ func TestBoolSliceAppendStartWithFalse(t *testing.T) {
 	bs := NewBoolSlice()
 	assert.Equal(t, 0, bs.Size())
 
-	bs.Append(false)
+	assert.Nil(t, bs.Append(false))
 	assert.Equal(t, 1, bs.Size())
 	assert.Equal(t, false, bs.Get(0))
 
-	bs.Append(false)
+	assert.Nil(t, bs.Append(false))
 	assert.Equal(t, 2, bs.Size())
 	assert.Equal(t, false, bs.Get(1))
 
-	bs.Append(true)
+	assert.Nil(t, bs.Append(true))
 	assert.Equal(t, 3, bs.Size())
 	assert.Equal(t, true, bs.Get(2))
 }
 
 func TestBoolSliceSetNoop(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true})
-	bs.Set(0, true)
+	assert.Nil(t, bs.Set(0, true))
 	assert.Equal(t, true, bs.Get(0))
 }
 
 func TestBoolSliceSimpleSet(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true})
-	bs.Set(0, false)
+	assert.Nil(t, bs.Set(0, false))
 	assert.Equal(t, false, bs.Get(0))
-	bs.Set(0, true)
+
+	assert.Nil(t, bs.Set(0, true))
 	assert.Equal(t, true, bs.Get(0))
 
-	bs.Append(true)
+	assert.Nil(t, bs.Append(true))
 	assert.Equal(t, true, bs.Get(0))
 	assert.Equal(t, true, bs.Get(1))
 
-	bs.Set(1, false)
+	assert.Nil(t, bs.Set(1, false))
 	assert.Equal(t, true, bs.Get(0))
 	assert.Equal(t, false, bs.Get(1))
 
-	bs.Set(0, false)
+	assert.Nil(t, bs.Set(0, false))
 	assert.Equal(t, false, bs.Get(0))
 	assert.Equal(t, false, bs.Get(1))
 
-	bs.Set(1, true)
+	assert.Nil(t, bs.Set(1, true))
 	assert.Equal(t, false, bs.Get(0))
 	assert.Equal(t, true, bs.Get(1))
 }
