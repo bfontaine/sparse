@@ -205,3 +205,31 @@ func TestBoolSliceSet3(t *testing.T) {
 
 	assertEqualBoolSlices(t, []bool{true, false, false, false}, bs.ToSlice())
 }
+
+func TestBoolSliceSetFalseOutsideOfRange(t *testing.T) {
+	bs := NewBoolSlice()
+	bs.Set(1000, false)
+
+	assert.Equal(t, 1, bs.msize)
+	assert.Equal(t, 1000, bs.m[0])
+}
+
+func TestBoolSliceSetTrueOutsideOfRange(t *testing.T) {
+	bs := NewBoolSlice()
+	bs.Set(1000, true)
+
+	assert.Equal(t, 2, bs.msize)
+	assert.Equal(t, 0, bs.m[0])
+	assert.Equal(t, 1000, bs.m[1])
+}
+
+func TestBoolSliceFalseEndSetTrueOutsideOfRange(t *testing.T) {
+	bs := BoolSliceFromSlice([]bool{true, false})
+	bs.Set(1000, true)
+
+	assert.Equal(t, 4, bs.msize)
+	assert.Equal(t, 0, bs.m[0])
+	assert.Equal(t, 1, bs.m[1])
+	assert.Equal(t, 998, bs.m[2]) // not sure here
+	assert.Equal(t, 1, bs.m[3])
+}

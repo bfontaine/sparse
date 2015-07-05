@@ -43,13 +43,42 @@ func (bs *BoolSlice) Set(idx int64, v bool) (err error) {
 	//bs.rw.Lock()
 	//defer bs.rw.Unlock()
 
-	if idx >= bs.size {
-		// TODO fill the cells with false, e.g.
-		// [false, true].Set(42, true)
-		// -> [false, true, 40 × false, true]
-	}
-
 	midx := bs.mindex(idx)
+
+	// TODO test me
+	if idx >= bs.size {
+		lastval := bs.lastmvalue()
+
+		if !v {
+			if !lastval {
+				// last value is false and the new value is false
+				// -> simple increment
+				bs.m[bs.msize-1] += idx - bs.size
+				bs.size = idx + 1
+			} else {
+				// last value is true and the new value is false
+				// -> append the missing false values
+				bs.m = append(bs.m, idx-bs.size)
+				bs.size = idx + 1
+				bs.msize++
+			}
+		} else {
+			if !lastval {
+				// last value is false and the new value is true
+				// -> increment + append true
+				bs.m[bs.msize-1] += idx - bs.size
+				bs.size = idx + 1
+				bs.m = append(bs.m, 1)
+				bs.msize++
+			} else {
+				// last value is true and the new value is true
+				// -> append the missing false values + the true one
+				bs.m = append(bs.m, idx-bs.size-1, 1)
+				bs.msize += 2
+			}
+		}
+		return
+	}
 
 	// noop
 	if bs.mvalue(midx) == v {
@@ -79,7 +108,14 @@ func (bs *BoolSlice) Append(v bool) (err error) {
 	return
 }
 
-func (bs *BoolSlice) lastmvalue() bool    { return bs.mvalue(bs.msize - 1) }
+func (bs *BoolSlice) lastmvalue() bool {
+	if bs.msize == 0 {
+		return true
+	}
+
+	return bs.mvalue(bs.msize - 1)
+}
+
 func (bs *BoolSlice) mvalue(i int64) bool { return i&1 == 1 }
 
 func (bs *BoolSlice) mindex(idx int64) int64 {
