@@ -21,7 +21,7 @@ internal data representation. You shouldn’t use these if you want small slices
 with frequent write accesses. They become practical with large data structures
 consisting of *sparse* data.
 
-For example, considere a slice of 1M `false` values with only 1000 `true`
+For example, consider a slice of 1M `false` values with only 1000 `true`
 values in it. A normal `bool` slice will need 1M cells while a `BoolSlice` will
 use between 2 and 2001 cells depending on where they are. Append another 1M
 false values: the `bool` slice will double its size while the `BoolSlice`
