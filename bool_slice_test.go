@@ -17,39 +17,39 @@ func assertEqualBoolSlices(t *testing.T, b1, b2 []bool) {
 
 func TestBoolSliceFromEmptySlice(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{})
-	assert.Equal(t, 1, bs.msize)
-	assert.Equal(t, 0, bs.m[0])
-	assert.Equal(t, 0, bs.size)
+	assert.Equal(t, int64(1), bs.msize)
+	assert.Equal(t, int64(0), bs.m[0])
+	assert.Equal(t, int64(0), bs.size)
 }
 
 func TestBoolSliceFromFalseOnlySlice1(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{false})
-	assert.Equal(t, 1, bs.msize)
-	assert.Equal(t, 1, bs.m[0])
-	assert.Equal(t, 1, bs.size)
+	assert.Equal(t, int64(1), bs.msize)
+	assert.Equal(t, int64(1), bs.m[0])
+	assert.Equal(t, int64(1), bs.size)
 }
 
 func TestBoolSliceFromFalseOnlySlice3(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{false, false, false})
-	assert.Equal(t, 1, bs.msize)
-	assert.Equal(t, 3, bs.m[0])
-	assert.Equal(t, 3, bs.size)
+	assert.Equal(t, int64(1), bs.msize)
+	assert.Equal(t, int64(3), bs.m[0])
+	assert.Equal(t, int64(3), bs.size)
 }
 
 func TestBoolSliceFromTrueOnlySlice1(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true})
-	assert.Equal(t, 2, bs.msize)
-	assert.Equal(t, 0, bs.m[0])
-	assert.Equal(t, 1, bs.m[1])
-	assert.Equal(t, 1, bs.size)
+	assert.Equal(t, int64(2), bs.msize)
+	assert.Equal(t, int64(0), bs.m[0])
+	assert.Equal(t, int64(1), bs.m[1])
+	assert.Equal(t, int64(1), bs.size)
 }
 
 func TestBoolSliceFromTrueOnlySlice3(t *testing.T) {
 	bs := BoolSliceFromSlice([]bool{true, true, true})
-	assert.Equal(t, 2, bs.msize)
-	assert.Equal(t, 0, bs.m[0])
-	assert.Equal(t, 3, bs.m[1])
-	assert.Equal(t, 3, bs.size)
+	assert.Equal(t, int64(2), bs.msize)
+	assert.Equal(t, int64(0), bs.m[0])
+	assert.Equal(t, int64(3), bs.m[1])
+	assert.Equal(t, int64(3), bs.size)
 }
 
 func TestBoolSliceFromToSlice(t *testing.T) {
@@ -82,12 +82,12 @@ func testmindexIndex(s []bool, i int64) int64 {
 }
 
 func TestBoolSliceMIndex(t *testing.T) {
-	assert.Equal(t, 0, testmindexIndex([]bool{false}, 0))
-	assert.Equal(t, 1, testmindexIndex([]bool{true}, 0))
+	assert.Equal(t, int64(0), testmindexIndex([]bool{false}, 0))
+	assert.Equal(t, int64(1), testmindexIndex([]bool{true}, 0))
 
-	assert.Equal(t, 0, testmindexIndex([]bool{false, false, true}, 0))
-	assert.Equal(t, 0, testmindexIndex([]bool{false, false, true}, 1))
-	assert.Equal(t, 1, testmindexIndex([]bool{false, false, true}, 2))
+	assert.Equal(t, int64(0), testmindexIndex([]bool{false, false, true}, 0))
+	assert.Equal(t, int64(0), testmindexIndex([]bool{false, false, true}, 1))
+	assert.Equal(t, int64(1), testmindexIndex([]bool{false, false, true}, 2))
 }
 
 func TestBoolSliceGet(t *testing.T) {
@@ -101,34 +101,34 @@ func TestBoolSliceGet(t *testing.T) {
 
 func TestBoolSliceAppendStartWithTrue(t *testing.T) {
 	bs := NewBoolSlice()
-	assert.Equal(t, 0, bs.Size())
+	assert.Equal(t, int64(0), bs.Size())
 
 	assert.Nil(t, bs.Append(true))
-	assert.Equal(t, 1, bs.Size())
+	assert.Equal(t, int64(1), bs.Size())
 	assert.Equal(t, true, bs.Get(0))
 
 	assert.Nil(t, bs.Append(true))
-	assert.Equal(t, 2, bs.Size())
+	assert.Equal(t, int64(2), bs.Size())
 	assert.Equal(t, true, bs.Get(1))
 
 	assert.Nil(t, bs.Append(false))
-	assert.Equal(t, 3, bs.Size())
+	assert.Equal(t, int64(3), bs.Size())
 	assert.Equal(t, false, bs.Get(2))
 }
 
 func TestBoolSliceAppendStartWithFalse(t *testing.T) {
 	bs := NewBoolSlice()
-	assert.Equal(t, 0, bs.Size())
+	assert.Equal(t, int64(0), bs.Size())
 
 	assert.Nil(t, bs.Append(false))
-	assert.Equal(t, 1, bs.Size())
+	assert.Equal(t, int64(1), bs.Size())
 	assert.Equal(t, false, bs.Get(0))
 
 	assert.Nil(t, bs.Append(false))
-	assert.Equal(t, 2, bs.Size())
+	assert.Equal(t, int64(2), bs.Size())
 	assert.Equal(t, false, bs.Get(1))
 
 	assert.Nil(t, bs.Append(true))
-	assert.Equal(t, 3, bs.Size())
+	assert.Equal(t, int64(3), bs.Size())
 	assert.Equal(t, true, bs.Get(2))
 }
